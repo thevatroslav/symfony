@@ -34,9 +34,11 @@ class Message
     private $user;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private $date;
+
+
+    private $date_created;
 
     public function getId(): ?int
     {
@@ -79,15 +81,17 @@ class Message
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate_created(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->date_created;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate_created(\DateTimeInterface $date_created): self
     {
-        $this->date = $date;
+        $this->date_created = $date_created;
 
         return $this;
     }
+
+
 }

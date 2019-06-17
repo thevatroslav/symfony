@@ -9,12 +9,18 @@
     </style>
 
     <div class="example-wrapper">
-        <h1>Hello {{ controller_name }}! ✅</h1>
 
-        This friendly message is coming from:
+        {% block head %}{{ parent() }}{% endblock %}
+
         <ul>
-            <li>Your controller at <code><a href="{{ '/home/vatroslav/PhpstormProjects/forum/src/Controller/ForumController.php'|file_link(0) }}">src/Controller/ForumController.php</a></code></li>
-            <li>Your template at <code><a href="{{ '/home/vatroslav/PhpstormProjects/forum/templates/forum/index.html.twig'|file_link(0) }}">templates/forum/index.html.twig</a></code></li>
+        {% for c in content %}
+            <li>{{ c.content }}</li>
+        {% endfor %}
         </ul>
+
+    </div>
+
+    <div class = "form">
+        {{ form(form) }}
     </div>
 {% endblock %}

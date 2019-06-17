@@ -5,6 +5,8 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -18,6 +20,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
+use \App\Form\ThreadType;
+use \App\Form\MessageType;
+
 class ForumController extends AbstractController
 {
 
@@ -28,6 +33,14 @@ class ForumController extends AbstractController
      */
     public function index(EntityManagerInterface $em)
     {
+
+        $_SESSION['user'] = $em->getRepository(User::class)->findBy([
+           'id'=>1,
+        ]);
+
+
+
+
         $subforums = $em->getRepository(Subforum::class)->findAll();
 
 //        var_dump($subforums);
@@ -44,41 +57,63 @@ class ForumController extends AbstractController
      */
     public function subforum(EntityManagerInterface $em, $subforum, Request $request)
     {
-
-        $user = new User();
-        $subforum = new Subforum();
-
-        $user->setPassword('123456');
-        $user->setUsername('vatroslav');
+        $sub = $em->getRepository(Subforum::class)->findBy([
+           'id'=>$subforum,
+        ]);
 
 
+//        var_dump($sub);1
 
-        $data = [
-            'thread' => new Thread(),
-        'message' => new Message()];
+        $thread = new Thread();
 
 
-        $form = $this->createFormBuilder($data)
-            ->add('title', TextType::class)
-            ->add('content',TextareaType::class)
-            ->add('submit', SubmitType::class)->getForm();
+        $new_message = new Message();
+
+        //THERE IS PROBABLY A BETTER WAY FOR THIS STUFF:
+
+        $new_message->setUser($_SESSION['user'][0]);
+        $new_message->setThread($thread);
+        $new_message->setDate_created(new \DateTime());
+
+        $thread->setDate_created(new \DateTime());
+        $thread->setSubforumid($sub[0]);
+        $thread->setUserid($_SESSION['user'][0]);
+        $thread->getMessages()->add($new_message);
+
+
+        $form = $this->createForm(ThreadType::class,$thread);
+
+        $form->add('submit', SubmitType::class,[
+            'label'=>'SUBMIT',
+        ]);
+
 
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            $data = $form->getData();
+
 
             $em->getEventManager();
-            $em->persist($data);
+
+            //THERE IS PROBABLY A BETTER WAY FOR THIS STUFF:
+            $em->persist($thread->getUserid());
+            $em->persist($thread->getSubforumid());
+            $em->persist($thread->getMessages()->get(0));
+            $em->persist($thread);
             $em->flush();
 
-            return $this->redirectToRoute('forum/'.$subforum);
+            return $this->redirect($request->getUri());
+
+
         }
+
 
         $threads = $em->getRepository(Thread::class)->findBy([
             'subforumid' => $subforum,
 
         ]);
+
+
 
         return $this->render('forum/subforum.html.twig', [
             'controller_name' => 'ForumController',
@@ -90,8 +125,42 @@ class ForumController extends AbstractController
     /**
      * @Route("forum/{subforum}/{thread}", name="thread_name")
      */
-    public function thread(EntityManagerInterface $em,$thread)
+    public function thread(EntityManagerInterface $em,$thread, Request $request)
     {
+        $new_message = new Message();
+
+        $new_message->setDate_created(new \DateTime());
+        $thr = $em->getRepository(Thread::class)->findBy([
+            'id'=>$thread]);
+        $new_message->setThread($thr[0]);
+        $new_message->setUser($_SESSION['user'][0]);
+
+//        var_dump($_SESSION['user'][0]);
+//        var_dump($new_message->getContent());
+
+        $form = $this->createForm(MessageType::class,$new_message)->add('submit', SubmitType::class,[
+                     'label'=>'SUBMIT',
+                 ]);
+
+
+//        var_dump($request);
+
+          $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+
+
+            $em->getEventManager();
+            $em->persist($new_message);
+            $em->persist($new_message->getUser());
+            $em->flush();
+
+            return $this->redirect($request->getUri());
+
+
+        }
+
+
         $messages = $em->getRepository(Message::class)->findBy([
             'thread' => $thread,
         ]);
@@ -100,6 +169,7 @@ class ForumController extends AbstractController
         return $this->render('forum/thread.html.twig', [
             'controller_name' => 'ForumController',
             'content' => $messages,
+            'form' => $form->createView(),
         ]);
     }
 

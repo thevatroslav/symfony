@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Thread
 {
+//    public $message;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -22,6 +23,13 @@ class Thread
      * @ORM\Column(type="string", length=255)
      */
     private $title;
+
+    /**
+     * @ORM\Column(type="datetime",nullable=true)
+     */
+
+    private $date_created;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="threads")
@@ -85,6 +93,7 @@ class Thread
         return $this;
     }
 
+
     /**
      * @return Collection|Message[]
      */
@@ -115,4 +124,20 @@ class Thread
 
         return $this;
     }
+
+
+
+    public function getDate_created(): ?\DateTimeInterface
+    {
+        return $this->date_created;
+    }
+
+    public function setDate_created(?\DateTimeInterface $date_created): self
+    {
+        $this->date_created = $date_created;
+
+        return $this;
+    }
+
+
 }
