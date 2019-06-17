@@ -1,0 +1,9 @@
+index:
+    path: /
+    controller: App\Controller\ForumController::index
+subforum:
+    path: /forum
+    controller: App\Controller\ForumController::subforum
+thread:
+    path: /forum
+    controller: App\Controller\ForumController::thread
