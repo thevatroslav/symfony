@@ -32,15 +32,16 @@ class Thread
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="threads")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumns(@ORM\JoinColumn(name="user_id"))
      */
-    private $userid;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Subforum", inversedBy="threads")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $subforumid;
+    private $subforum;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Message", mappedBy="thread", orphanRemoval=true)
@@ -69,26 +70,26 @@ class Thread
         return $this;
     }
 
-    public function getUserid(): ?User
+    public function getUser(): ?User
     {
-        return $this->userid;
+        return $this->user;
     }
 
-    public function setUserid(?User $userid): self
+    public function setUser(?User $user): self
     {
-        $this->userid = $userid;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getSubforumid(): ?Subforum
+    public function getSubforum(): ?Subforum
     {
-        return $this->subforumid;
+        return $this->subforum;
     }
 
-    public function setSubforumid(?Subforum $subforumid): self
+    public function setSubforum(?Subforum $subforum): self
     {
-        $this->subforumid = $subforumid;
+        $this->subforum = $subforum;
 
         return $this;
     }
@@ -138,6 +139,8 @@ class Thread
 
         return $this;
     }
+
+
 
 
 }

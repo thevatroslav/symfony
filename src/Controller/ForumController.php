@@ -20,8 +20,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-use \App\Form\ThreadType;
-use \App\Form\MessageType;
+use Symfony\Component\Security\Core\Security;
+
+use App\Form\ThreadType;
+use App\Form\MessageType;
+
+
 
 class ForumController extends AbstractController
 {
@@ -33,13 +37,6 @@ class ForumController extends AbstractController
      */
     public function index(EntityManagerInterface $em)
     {
-
-        $_SESSION['user'] = $em->getRepository(User::class)->findBy([
-           'id'=>1,
-        ]);
-
-
-
 
         $subforums = $em->getRepository(Subforum::class)->findAll();
 
@@ -55,14 +52,16 @@ class ForumController extends AbstractController
     /**
      * @Route("forum/{subforum}", name="subforum_name")
      */
-    public function subforum(EntityManagerInterface $em, $subforum, Request $request)
+    public function subforum(EntityManagerInterface $em, $subforum, Request $request, Security $security)
     {
+        $user = $security->getUser();
+
         $sub = $em->getRepository(Subforum::class)->findBy([
            'id'=>$subforum,
         ]);
 
 
-//        var_dump($sub);1
+//        var_dump($sub);
 
         $thread = new Thread();
 
@@ -71,14 +70,14 @@ class ForumController extends AbstractController
 
         //THERE IS PROBABLY A BETTER WAY FOR THIS STUFF:
 
-        $new_message->setUser($_SESSION['user'][0]);
+        $new_message->setUser($user);
         $new_message->setThread($thread);
         $new_message->setDate_created(new \DateTime());
 
         $thread->setDate_created(new \DateTime());
-        $thread->setSubforumid($sub[0]);
-        $thread->setUserid($_SESSION['user'][0]);
-        $thread->getMessages()->add($new_message);
+        $thread->setSubforum($sub[0]);
+        $thread->setUser($user);
+        $thread->addMessage($new_message);
 
 
         $form = $this->createForm(ThreadType::class,$thread);
@@ -96,8 +95,8 @@ class ForumController extends AbstractController
             $em->getEventManager();
 
             //THERE IS PROBABLY A BETTER WAY FOR THIS STUFF:
-            $em->persist($thread->getUserid());
-            $em->persist($thread->getSubforumid());
+            $em->persist($thread->getUser());
+            $em->persist($thread->getSubforum());
             $em->persist($thread->getMessages()->get(0));
             $em->persist($thread);
             $em->flush();
@@ -109,7 +108,7 @@ class ForumController extends AbstractController
 
 
         $threads = $em->getRepository(Thread::class)->findBy([
-            'subforumid' => $subforum,
+            'subforum' => $subforum,
 
         ]);
 
@@ -125,7 +124,7 @@ class ForumController extends AbstractController
     /**
      * @Route("forum/{subforum}/{thread}", name="thread_name")
      */
-    public function thread(EntityManagerInterface $em,$thread, Request $request)
+    public function thread(EntityManagerInterface $em,$thread, Request $request, Security $security)
     {
         $new_message = new Message();
 
@@ -133,7 +132,7 @@ class ForumController extends AbstractController
         $thr = $em->getRepository(Thread::class)->findBy([
             'id'=>$thread]);
         $new_message->setThread($thr[0]);
-        $new_message->setUser($_SESSION['user'][0]);
+        $new_message->setUser($security->getUser());
 
 //        var_dump($_SESSION['user'][0]);
 //        var_dump($new_message->getContent());
@@ -144,6 +143,7 @@ class ForumController extends AbstractController
 
 
 //        var_dump($request);
+
 
           $form->handleRequest($request);
 

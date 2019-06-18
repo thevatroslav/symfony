@@ -1,5 +1,5 @@
 index:
-    path: /
+    path: /forum
     controller: App\Controller\ForumController::index
 subforum:
     path: /forum
@@ -7,3 +7,6 @@ subforum:
 thread:
     path: /forum
     controller: App\Controller\ForumController::thread
+app_logout:
+    path: /forum
+    controller: App\Controller\ForumController::index

@@ -29,7 +29,7 @@ class Subforum
     private $date_created;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Thread", mappedBy="subforumid", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Thread", mappedBy="subforum", orphanRemoval=true)
      */
     private $threads;
 
