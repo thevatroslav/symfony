@@ -17,13 +17,15 @@ security:
         main:
             form_login:
                 default_target_path: index
-            anonymous: true
+            pattern: ^/
+            anonymous: ~
 
             guard:
                 authenticators:
                     - App\Security\UserAuthenticator
             logout:
-                path: app_logout
+                path: logout
+                target: /forum
 
 
             # activate different ways to authenticate
@@ -35,5 +37,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - {path: ^/login,roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - {path: ^/register,roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - {path: ^/,roles: IS_AUTHENTICATED_ANONYMOUSLY}
+
+#        - {^/}
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+

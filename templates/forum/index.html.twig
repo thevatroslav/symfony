@@ -11,6 +11,17 @@
 <div class="example-wrapper">
     {% block head %}<h1>WELCOME TO THE COLORBLIND FORUM!</h1>
     <h2>WE USE NO COLORS!</h2>
+        <ul>
+
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <li><a href="{{ path('logout') }}">Log out</a></li>
+                {% else %}
+            <li> <a href="{{ path('login') }}">Login</a></li>
+                    <li><a href="{{ path('register') }}">Register</a></li>
+
+                {% endif %}
+
+        </ul>
     {% endblock %}
 
     {% block content %}

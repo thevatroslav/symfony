@@ -1,5 +1,5 @@
 index:
-    path: /forum
+    path: /
     controller: App\Controller\ForumController::index
 subforum:
     path: /forum
@@ -7,6 +7,12 @@ subforum:
 thread:
     path: /forum
     controller: App\Controller\ForumController::thread
-app_logout:
-    path: /forum
-    controller: App\Controller\ForumController::index
+logout:
+    path: /logout
+    methods: GET
+login:
+    path: /login
+    controller: App\Controller\LoginController::login
+register:
+    path: /register
+    controller: App\Controller\RegistrationController::register

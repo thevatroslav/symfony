@@ -28,7 +28,7 @@ class Message
     private $thread;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade="persist")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

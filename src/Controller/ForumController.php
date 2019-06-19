@@ -95,9 +95,9 @@ class ForumController extends AbstractController
             $em->getEventManager();
 
             //THERE IS PROBABLY A BETTER WAY FOR THIS STUFF:
-            $em->persist($thread->getUser());
-            $em->persist($thread->getSubforum());
-            $em->persist($thread->getMessages()->get(0));
+//            $em->persist($thread->getUser());
+//            $em->persist($thread->getSubforum());
+//            $em->persist($thread->getMessages()->get(0));
             $em->persist($thread);
             $em->flush();
 
@@ -152,7 +152,7 @@ class ForumController extends AbstractController
 
             $em->getEventManager();
             $em->persist($new_message);
-            $em->persist($new_message->getUser());
+//            $em->persist($new_message->getUser());
             $em->flush();
 
             return $this->redirect($request->getUri());
@@ -173,5 +173,8 @@ class ForumController extends AbstractController
         ]);
     }
 
+    public function logout(){
+        return $this->redirectToRoute('index');
+    }
 
 }

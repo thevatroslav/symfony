@@ -32,19 +32,19 @@ class Thread
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade="persist")
      * @ORM\JoinColumns(@ORM\JoinColumn(name="user_id"))
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Subforum", inversedBy="threads")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Subforum", inversedBy="threads", cascade="persist")
      * @ORM\JoinColumn(nullable=false)
      */
     private $subforum;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Message", mappedBy="thread", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Message", mappedBy="thread", orphanRemoval=true, cascade="persist")
      */
     private $messages;
 
