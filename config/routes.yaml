@@ -10,7 +10,7 @@ thread:
 logout:
     path: /logout
     methods: GET
-login:
+app_login:
     path: /login
     controller: App\Controller\LoginController::login
 register:

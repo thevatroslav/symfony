@@ -44,7 +44,7 @@ class ForumController extends AbstractController
 
         return $this->render('forum/index.html.twig', [
             'controller_name' => 'ForumController',
-            'content' => $subforums,
+            'subforums' => $subforums,
 
         ]);
     }
@@ -84,6 +84,7 @@ class ForumController extends AbstractController
 
         $form->add('submit', SubmitType::class,[
             'label'=>'SUBMIT',
+
         ]);
 
 
@@ -91,6 +92,9 @@ class ForumController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
 
+            if(!isset($user)){
+                return $this->redirect('/login');
+            }
 
             $em->getEventManager();
 
@@ -116,7 +120,7 @@ class ForumController extends AbstractController
 
         return $this->render('forum/subforum.html.twig', [
             'controller_name' => 'ForumController',
-            'content' => $threads,
+            'threads' => $threads,
             'form' => $form->createView(),
         ]);
     }
@@ -132,7 +136,8 @@ class ForumController extends AbstractController
         $thr = $em->getRepository(Thread::class)->findBy([
             'id'=>$thread]);
         $new_message->setThread($thr[0]);
-        $new_message->setUser($security->getUser());
+        $user = $security->getUser();
+        $new_message->setUser($user);
 
 //        var_dump($_SESSION['user'][0]);
 //        var_dump($new_message->getContent());
@@ -144,6 +149,9 @@ class ForumController extends AbstractController
 
 //        var_dump($request);
 
+        if(!isset($user)){
+            return $this->redirect('/login');
+        }
 
           $form->handleRequest($request);
 
@@ -168,7 +176,7 @@ class ForumController extends AbstractController
 
         return $this->render('forum/thread.html.twig', [
             'controller_name' => 'ForumController',
-            'content' => $messages,
+            'messages' => $messages,
             'form' => $form->createView(),
         ]);
     }

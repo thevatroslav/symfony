@@ -12,9 +12,9 @@
 
         {% block head %}{{ parent() }}{% endblock %}
 
-        <ul>
-        {% for c in content %}
-            <li>{{ c.content }}</li>
+        <ul id="subforum_list">
+        {% for m in messages %}
+            <li>{{ m.content }}:{{ m.user.username }}:{{ m.date_created.date }}</li>
         {% endfor %}
         </ul>
 

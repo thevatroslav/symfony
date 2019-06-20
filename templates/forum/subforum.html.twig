@@ -13,7 +13,12 @@
     <div class="example-wrapper">
         {% block head %}{{ parent() }}{% endblock %}
 
-        {% block content %}{{ parent() }}{% endblock %}
+        <ul id="subforum_list">
+            {% for t in threads %}
+                <li><a href="{{ app.request.uri }}/{{ t.id }}">{{ t.title }}:{{ t.user.username }}:{{ t.date_created.date }}</a></li>
+
+            {% endfor %}
+        </ul>
 
     </div>
 
