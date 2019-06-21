@@ -19,6 +19,9 @@ app_register:
     path: /register
     controller: App\Controller\RegistrationController::register
     methods: GET|POST
-view_profile:
-    path: /profile
-    controller: App\Controller\ProfileController::index
+profile_own:
+    path: /profile/own
+    controller: App\Controller\ProfileController::view_own
+profile_user:
+    path: /profile/user
+    controller: App\Controller\ProfileController::view_profile

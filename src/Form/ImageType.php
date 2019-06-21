@@ -8,13 +8,11 @@ use App\Entity\Message;
 
 use PhpParser\Node\Expr\Cast\Object_;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 //use Symfony\Component\Form\Extension\Core\Type\LabelType;
-
 
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
@@ -22,7 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProfileType extends AbstractType
+class ImageType extends AbstractType
 {
 
 
@@ -34,27 +32,8 @@ class ProfileType extends AbstractType
             'data_class'=> User::class
         ]);
 
-        $builder
-            ->add('username', TextType::class)
-            ->add('password', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('image', FileType::class);
+        $builder->add('image', FileType::class);
 
-        $builder->get('image')->addModelTransformer(new CallbackTransformer(
-            function (){
-                return null;
-            },
-            function ($image){
-                return $image;
-            }));
-
-        $builder->get('password')->addModelTransformer(new CallbackTransformer(
-            function (){
-                return null;
-            },
-            function ($password){
-                return $password;
-            }));
 
     }
 
