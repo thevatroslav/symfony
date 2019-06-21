@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints\Length;
 
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -40,7 +42,7 @@ class RegistrationFormType extends AbstractType
                     ])
                 ]
 
-            ])
+            ])->add('image', FileType::class,['label'=> 'image', 'data_class'=>null])
         ;
     }
 

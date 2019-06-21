@@ -15,15 +15,22 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            form_login:
-                default_target_path: index
-
-            pattern: ^/
-            anonymous: ~
 
             guard:
                 authenticators:
                     - App\Security\UserAuthenticator
+
+            pattern: ^/
+
+            anonymous: ~
+
+            form_login:
+                default_target_path: index
+                always_use_default_target_path: true
+
+
+
+
             logout:
                 path: logout
                 target: /forum

@@ -35,8 +35,9 @@ class ForumController extends AbstractController
     /**
      * @Route("/forum", name="forum")
      */
-    public function index(EntityManagerInterface $em)
+    public function index(EntityManagerInterface $em, Security $security)
     {
+        $user = $security->getUser();
 
         $subforums = $em->getRepository(Subforum::class)->findAll();
 
@@ -45,6 +46,7 @@ class ForumController extends AbstractController
         return $this->render('forum/index.html.twig', [
             'controller_name' => 'ForumController',
             'subforums' => $subforums,
+            'user' => $user,
 
         ]);
     }
@@ -74,10 +76,12 @@ class ForumController extends AbstractController
         $new_message->setThread($thread);
         $new_message->setDate_created(new \DateTime());
 
-        $thread->setDate_created(new \DateTime());
+        $thread->setDateCreated(new \DateTime());
         $thread->setSubforum($sub[0]);
         $thread->setUser($user);
         $thread->addMessage($new_message);
+        $thread->setLastMessageDate(new \DateTime());
+        $sub[0]->setLastMessage(new \DateTime());
 
 
         $form = $this->createForm(ThreadType::class,$thread);
@@ -149,14 +153,15 @@ class ForumController extends AbstractController
 
 //        var_dump($request);
 
-        if(!isset($user)){
-            return $this->redirect('/login');
-        }
+
 
           $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
 
+            if(!isset($user)){
+                return $this->redirect('/login');
+            }
 
             $em->getEventManager();
             $em->persist($new_message);
@@ -180,6 +185,7 @@ class ForumController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
 
     public function logout(){
         return $this->redirectToRoute('index');

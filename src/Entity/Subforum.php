@@ -26,7 +26,12 @@ class Subforum
     /**
      * @ORM\Column(type="datetime",nullable=true)
      */
-    private $date_created;
+    private $dateCreated;
+
+    /**
+     * @ORM\Column(type="datetime",nullable=true)
+     */
+    private $lastMessage;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Thread", mappedBy="subforum", orphanRemoval=true)
@@ -62,12 +67,12 @@ class Subforum
 
     public function getDateCreated(): ?\DateTimeInterface
     {
-        return $this->date_created;
+        return $this->dateCreated;
     }
 
-    public function setDateCreated(\DateTimeInterface $date_created): self
+    public function setDateCreated(?\DateTimeInterface $dateCreated): self
     {
-        $this->date_created = $date_created;
+        $this->dateCreated = $dateCreated;
 
         return $this;
     }
@@ -84,7 +89,7 @@ class Subforum
     {
         if (!$this->threads->contains($thread)) {
             $this->threads[] = $thread;
-            $thread->setSubforumid($this);
+            $thread->setSubforum($this);
         }
 
         return $this;
@@ -95,8 +100,8 @@ class Subforum
         if ($this->threads->contains($thread)) {
             $this->threads->removeElement($thread);
             // set the owning side to null (unless already changed)
-            if ($thread->getSubforumid() === $this) {
-                $thread->setSubforumid(null);
+            if ($thread->getSubforum() === $this) {
+                $thread->setSubforum(null);
             }
         }
 
@@ -111,6 +116,18 @@ class Subforum
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getLastMessage(): ?\DateTimeInterface
+    {
+        return $this->lastMessage;
+    }
+
+    public function setLastMessage(?\DateTimeInterface $lastMessage): self
+    {
+        $this->lastMessage = $lastMessage;
 
         return $this;
     }

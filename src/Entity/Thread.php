@@ -28,7 +28,7 @@ class Thread
      * @ORM\Column(type="datetime",nullable=true)
      */
 
-    private $date_created;
+    private $dateCreated;
 
 
     /**
@@ -45,8 +45,15 @@ class Thread
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Message", mappedBy="thread", orphanRemoval=true, cascade="persist")
+     *
      */
     private $messages;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+
+    private $lastMessageDate;
 
     public function __construct()
     {
@@ -94,7 +101,6 @@ class Thread
         return $this;
     }
 
-
     /**
      * @return Collection|Message[]
      */
@@ -126,16 +132,26 @@ class Thread
         return $this;
     }
 
-
-
-    public function getDate_created(): ?\DateTimeInterface
+    public function getDateCreated(): ?\DateTimeInterface
     {
-        return $this->date_created;
+        return $this->dateCreated;
     }
 
-    public function setDate_created(?\DateTimeInterface $date_created): self
+    public function setDateCreated(?\DateTimeInterface $dateCreated): self
     {
-        $this->date_created = $date_created;
+        $this->dateCreated = $dateCreated;
+
+        return $this;
+    }
+
+    public function getLastMessageDate(): ?\DateTimeInterface
+    {
+        return $this->lastMessageDate;
+    }
+
+    public function setLastMessageDate(?\DateTimeInterface $lastMessageDate): self
+    {
+        $this->lastMessageDate = $lastMessageDate;
 
         return $this;
     }

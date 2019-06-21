@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Image;
+
 use App\Form\RegistrationFormType;
 use App\Security\UserAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,6 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+
+
 class RegistrationController extends AbstractController
 {
     /**
@@ -20,18 +27,42 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, UserAuthenticator $authenticator): Response
     {
         $user = new User();
+
+
         $form = $this->createForm(RegistrationFormType::class, $user);
 
-        $user->setDate_joined(new \DateTime());
+        $user->setDateJoined(new \DateTime());
         $user->setEmail($form->get('email')->getName());
 
         $user->setRoles(['FORUM_USER']);
+        $user->setLastLogin(new \DateTime());
 
         $form->handleRequest($request);
 
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
+            /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
+
+            $file = $form->get('image')->getData();
+
+
+            $filename= md5(uniqid()) . '.'. $file->guessExtension();
+
+            $user->setImage($filename);
+
+            try{
+                $file->move(
+                    'img',
+                    $filename
+
+                );
+            } catch (FileException $e) {
+                var_dump($e);
+            }
+
+//            exit(-1);
+
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
